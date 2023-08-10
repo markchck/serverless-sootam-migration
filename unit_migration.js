@@ -23,7 +23,7 @@ async function main() {
     JSON.parse(data).forEach(async (element) => {
       try {
         const unitId = element.id || ""
-        const name = element.name || ""
+        const unitName = element.name || ""
         const chapter = element.chapter || ""
 
         const dynamoDb = new AWS.DynamoDB.DocumentClient()
@@ -32,7 +32,7 @@ async function main() {
           Item: {
             pk: "unit",
             sk: `unitId#${unitId}`,
-            name: name,
+            unitName: unitName,
             chapter: chapter,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),

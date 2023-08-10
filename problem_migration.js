@@ -1,5 +1,6 @@
 const fs = require("fs")
-const filePath = "/Users/jaeminki/Desktop/problem.json"
+const filePath = "/Users/jaeminki/Desktop/problem+unit copy.json"
+// const filePath = "/Users/jaeminki/programming/serverless/sootam_migration/mysql/problem+unit.json"
 const AWS = require("aws-sdk")
 const AWS_region = "ap-northeast-2"
 AWS.config.update({ region: AWS_region })
@@ -22,32 +23,38 @@ async function main() {
     const data = await extract()
     JSON.parse(data).forEach(async (element) => {
       try {
-        const questionId = element.id || ""
+        const problemId = element.id || ""
         const year = element.date.slice(0, 4) || ""
         const month = element.date.slice(4, 6) || ""
         const copyright = element.copyright.split(" ")[0] || ""
         const testType = element.copyright.split(" ")[1] || ""
         const number = element.number.toString() || ""
         const successRate = element.corper.toString() || ""
-        const questionImage = JSON.parse(element.image_data).id || ""
+        const problemImage = JSON.parse(element.image_data).id || ""
         const solutionImage = JSON.parse(element.solution_data).id || ""
         const answer = element.answer.toString() || ""
+        const unitId = element.unitId || ""
+        const unitName = element.unitName || ""
+        const chapter = element.chapter || ""
 
         const dynamoDb = new AWS.DynamoDB.DocumentClient()
         const putParams = {
           TableName: "sootam-dev",
           Item: {
-            pk: "question",
-            sk: `questionId#${questionId}`,
+            pk: "problem",
+            sk: `problemId#${problemId}`,
             year: year,
             month: month,
             number: number,
             successRate: successRate,
-            questionImage: questionImage,
+            problemImage: problemImage,
             solutionImage: solutionImage,
             answer: answer,
             testType: testType,
             copyright: copyright,
+            unitId: unitId,
+            unitName: unitName,
+            chapter: chapter,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
           },
